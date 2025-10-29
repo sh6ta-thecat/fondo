@@ -1,1 +1,58 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Descargar imagen - fondo.png</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#f4f6fb}
+    .card{background:white;padding:24px;border-radius:12px;box-shadow:0 6px 20px rgba(20,30,60,0.08);max-width:720px;text-align:center}
+    img{max-width:100%;height:auto;border-radius:8px;margin-bottom:16px}
+    .controls{display:flex;gap:12px;justify-content:center}
+    button,a.download{appearance:none;border:0;padding:10px 16px;border-radius:8px;font-weight:600;cursor:pointer}
+    button{background:#2563eb;color:#fff}
+    a.download{background:#e6e9f6;color:#111;text-decoration:none;display:inline-block}
+    small{display:block;margin-top:12px;color:#666}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Descargar <em>fondo.png</em></h1>
+    <!-- Previsualización de la imagen (la ruta debe ser relativa al archivo HTML) -->
+    <img id="preview" src="fondo.png" alt="fondo.png" />
+
+    <div class="controls">
+      <!-- Enlace directo usando el atributo download (funciona si la imagen está en el mismo origen) -->
+      <a id="directDownload" class="download" href="fondo.png" download="fondo.png">Descarga directa</a>
+
+      <!-- Botón JS: fuerza la descarga (útil si el navegador ignora el atributo download por CORS) -->
+      <button id="forceBtn">Forzar descarga (fallback)</button>
+    </div>
+
+    <small>Coloca <strong>fondo.png</strong> en la misma carpeta que este archivo HTML.</small>
+  </div>
+
+  <script>
+    // Fallback: descarga mediante fetch y creación de blob para evitar problemas con CORS
+    document.getElementById('forceBtn').addEventListener('click', async function () {
+      const url = 'fondo.png';
+      try {
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error('No se pudo obtener la imagen: ' + resp.status);
+        const blob = await resp.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = 'fondo.png';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(blobUrl);
+      } catch (err) {
+        alert('Error al descargar: ' + err.message + '\nAsegúrate de que fondo.png esté en la misma carpeta que este HTML.');
+      }
+    });
+  </script>
+</body>
+</html>
 
